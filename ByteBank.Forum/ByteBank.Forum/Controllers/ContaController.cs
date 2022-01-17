@@ -3,6 +3,7 @@ using ByteBank.Forum.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace ByteBank.Forum.Controllers
@@ -28,17 +29,22 @@ namespace ByteBank.Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
-                if (user == null)
+
+                if (user != null)
                 {
-                    user = new UsuarioAplicacao()
-                    {
-                        Email = model.Email,
-                        UserName = model.UserName,
-                        NomeCompleto = model.NomeCompleto
-                    };
+                    ModelState.AddModelError("", "Usuário já existente");
+                    return View(model);
                 }
+
+                user = new UsuarioAplicacao()
+                {
+                    Email = model.Email,
+                    UserName = model.UserName,
+                    NomeCompleto = model.NomeCompleto
+                };
+
 
                 var result = await _userManager.CreateAsync(user, model.Senha);
 
@@ -48,9 +54,18 @@ namespace ByteBank.Forum.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
             }
 
             return View(model);
         }
+
+
     }
 }
