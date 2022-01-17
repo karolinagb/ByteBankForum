@@ -1,6 +1,10 @@
+using ByteBank.Forum.Data;
+using ByteBank.Forum.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +27,15 @@ namespace ByteBank.Forum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+               .AddIdentity<UsuarioAplicacao, IdentityRole>() //Adiciona o sistema Identiy padrão para os tipos de perfis especificados
+               .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementação do EntityFramework que armazena as informações de identidade
+               .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
+
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ByteBankForumContext>(options =>
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
             services.AddControllersWithViews();
         }
 
@@ -44,6 +57,7 @@ namespace ByteBank.Forum
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
