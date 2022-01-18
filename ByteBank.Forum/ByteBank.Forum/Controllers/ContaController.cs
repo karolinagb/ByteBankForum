@@ -29,16 +29,7 @@ namespace ByteBank.Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-
-
-                if (user != null)
-                {
-                    ModelState.AddModelError("", "Usuário já existente");
-                    return View(model);
-                }
-
-                user = new UsuarioAplicacao()
+                var user = new UsuarioAplicacao()
                 {
                     Email = model.Email,
                     UserName = model.UserName,

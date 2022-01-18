@@ -1,5 +1,6 @@
 using ByteBank.Forum.Data;
 using ByteBank.Forum.Models;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +36,8 @@ namespace ByteBank.Forum
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ByteBankForumContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+            services.AddMvc().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddControllersWithViews();
         }
