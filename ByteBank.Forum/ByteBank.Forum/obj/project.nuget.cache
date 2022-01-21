@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "P8D4gdxLwkHErvy+Thxi/jvSaghc6IR56K59zpLPgAVH8ZOoUy8bOCO5owSooqEB2yoLRL9DNPjujp2Oq2CxHQ==",
+  "dgSpecHash": "CxXG0LntVkcfssJ9lnxoBt2jG9J07sjuLRKLN0Y0K/orPZh/MnA5Qhm2UA9IEi9Jcdptkdob1JKeevdqWYHlRw==",
   "success": true,
   "projectFilePath": "C:\\projetos\\ByteBankForum\\ByteBank.Forum\\ByteBank.Forum\\ByteBank.Forum.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Karol\\.nuget\\packages\\fluentvalidation\\10.3.6\\fluentvalidation.10.3.6.nupkg.sha512",
+    "C:\\Users\\Karol\\.nuget\\packages\\fluentvalidation.aspnetcore\\10.3.6\\fluentvalidation.aspnetcore.10.3.6.nupkg.sha512",
+    "C:\\Users\\Karol\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\10.3.6\\fluentvalidation.dependencyinjectionextensions.10.3.6.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.13\\microsoft.aspnetcore.cryptography.internal.5.0.13.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.13\\microsoft.aspnetcore.cryptography.keyderivation.5.0.13.nupkg.sha512",
