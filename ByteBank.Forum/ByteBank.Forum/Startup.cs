@@ -28,7 +28,9 @@ namespace ByteBank.Forum
         public void ConfigureServices(IServiceCollection services)
         {
             services
-               .AddIdentity<UsuarioAplicacao, IdentityRole>() //Adiciona o sistema Identiy padrão para os tipos de perfis especificados
+               .AddIdentity<UsuarioAplicacao, IdentityRole>(
+                    option => option.SignIn.RequireConfirmedEmail = true
+                ) //Adiciona o sistema Identiy padrão para os tipos de perfis especificados
                .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementação do EntityFramework que armazena as informações de identidade
                .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
 
