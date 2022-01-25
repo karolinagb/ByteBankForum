@@ -1,5 +1,8 @@
+using AutoMapper;
 using ByteBank.Forum.Data;
 using ByteBank.Forum.Models;
+using ByteBank.Forum.Services;
+using ByteBank.Forum.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
