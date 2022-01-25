@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "PFsn+j2GZRi52wAh6pUNRDJxJXxpjDs/7p0J7PWYM59qdB2EbGwduxPzAdaRE8p8tcLP2V10XPWJGhucPrmy0g==",
+  "dgSpecHash": "ugzxawe3RPztU1o4fWPB1Kl1UTj0VTpBGtB2kJKNLtpv994wlge1z8ssdti6WYQqITdXlpmMs5nLff+rVkvdAA==",
   "success": true,
   "projectFilePath": "C:\\projetos\\ByteBankForum\\ByteBank.Forum\\ByteBank.Forum\\ByteBank.Forum.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Karol\\.nuget\\packages\\fluentvalidation\\10.3.6\\fluentvalidation.10.3.6.nupkg.sha512",
+    "C:\\Users\\Karol\\.nuget\\packages\\fluentvalidation.aspnetcore\\10.3.6\\fluentvalidation.aspnetcore.10.3.6.nupkg.sha512",
+    "C:\\Users\\Karol\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\10.3.6\\fluentvalidation.dependencyinjectionextensions.10.3.6.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\mailkit\\3.1.0\\mailkit.3.1.0.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.13\\microsoft.aspnetcore.cryptography.internal.5.0.13.nupkg.sha512",
@@ -96,5 +99,12 @@
     "C:\\Users\\Karol\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problema ao ler o arquivo de cache C:\\projetos\\ByteBankForum\\ByteBank.Forum\\ByteBank.Forum\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

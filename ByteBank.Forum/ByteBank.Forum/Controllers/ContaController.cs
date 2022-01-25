@@ -5,6 +5,7 @@ using ByteBank.Forum.ViewModels;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace ByteBank.Forum.Controllers
@@ -33,17 +34,13 @@ namespace ByteBank.Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
-
-                if (user == null)
+                var user = new UsuarioAplicacao()
                 {
-                    user = new UsuarioAplicacao()
-                    {
-                        Email = model.Email,
-                        UserName = model.UserName,
-                        NomeCompleto = model.NomeCompleto
-                    };
-                }
+                    Email = model.Email,
+                    UserName = model.UserName,
+                    NomeCompleto = model.NomeCompleto
+                };
+
 
                 var result = await _userManager.CreateAsync(user, model.Senha);
 
@@ -59,11 +56,17 @@ namespace ByteBank.Forum.Controllers
 
                     return View("~/Views/Conta/AguardandoConfirmacao.cshtml");
                 }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
             }
 
             return View(model);
         }
-
         public async Task<ActionResult> ConfirmacaoEmail(string userId, string code)
         {
             if(userId == null || code == null)

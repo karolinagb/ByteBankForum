@@ -408,8 +408,10 @@ C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\ByteBan
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\MySqlConnector.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
-C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\AutoMapper.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\MailKit.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\MimeKit.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\BouncyCastle.Crypto.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\AguardandoConfirmacao.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\FluentValidation.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\FluentValidation.AspNetCore.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\FluentValidation.DependencyInjectionExtensions.dll
