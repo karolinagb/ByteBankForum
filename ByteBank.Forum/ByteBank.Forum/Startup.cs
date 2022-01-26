@@ -1,21 +1,12 @@
-using AutoMapper;
 using ByteBank.Forum.Data;
 using ByteBank.Forum.Models;
-using ByteBank.Forum.Services;
-using ByteBank.Forum.ViewModels;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ByteBank.Forum
 {
@@ -34,15 +25,13 @@ namespace ByteBank.Forum
             services
                .AddIdentity<UsuarioAplicacao, IdentityRole>(
                     option => option.SignIn.RequireConfirmedEmail = true
-                ) //Adiciona o sistema Identiy padrï¿½o para os tipos de perfis especificados
-               .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementaï¿½ï¿½o do EntityFramework que armazena as informaï¿½ï¿½es de identidade
+                ) //Adiciona o sistema Identiy padrão para os tipos de perfis especificados
+               .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementação do EntityFramework que armazena as informações de identidade
                .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ByteBankForumContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
-            services.AddMvc().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddControllersWithViews();
         }
