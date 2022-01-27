@@ -33,10 +33,8 @@
     ".NETCoreApp,Version=v5.0": {
       "ByteBank.Forum/1.0.0": {
         "dependencies": {
-
-          "MailKit": "3.1.0",
           "FluentValidation.AspNetCore": "10.3.6",
-
+          "MailKit": "3.1.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "5.0.13",
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "5.0.12",
           "Microsoft.EntityFrameworkCore.Tools": "5.0.13",
