@@ -1,0 +1,18 @@
+﻿@model ByteBank.Forum.ViewModels.ContaLoginViewModel
+
+<h2>Login</h2>
+
+@using (Html.BeginForm())
+{
+    //O primeiro parametro é a mensagem e o segundo é a classe do bootstrap
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    //Com esse código o asp.net vai criar todos os campos definidos na model automaticamente
+    @Html.EditorForModel()
+
+    <div class="form-group">
+        <div class="offset-2 col-md-10">
+            <input type="submit" value="Fazer Login" class="btn" />
+        </div>
+    </div>
+} 
