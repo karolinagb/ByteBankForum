@@ -119,6 +119,13 @@ namespace ByteBank.Forum.Controllers
             return View("~/Views/Shared/Error.cshtml");
         }
 
+        [HttpPost]
+        public ActionResult LogOff()
+        {
+            _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         private async Task EnviarEmailDeConfirmacao(UsuarioAplicacao model)
         {
             var code = await _userManager
