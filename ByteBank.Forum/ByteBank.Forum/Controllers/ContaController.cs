@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-
 namespace ByteBank.Forum.Controllers
 {
 
@@ -69,7 +68,7 @@ namespace ByteBank.Forum.Controllers
             return View(model);
         }
 
-        public async Task<ActionResult> Login()
+        public ActionResult Login()
         {
             return View();
         }
@@ -86,17 +85,37 @@ namespace ByteBank.Forum.Controllers
                             user.UserName,
                             model.Senha,
                             isPersistent: model.ContinuarLogado, //Se o usuario deve continua logado ou não
-                            lockoutOnFailure: false);
+                            lockoutOnFailure: true);
 
-                    if (signInResult.Succeeded)
+                    switch (signInResult.ToString())
                     {
-                        return RedirectToAction("Index", "Home");
+                        case "Succeeded":
+                            return RedirectToAction("Index", "Home");
+
+                        case "Lockedout":
+                            var isSenhaCorreta = await _userManager.CheckPasswordAsync(user, model.Senha);
+
+                            if (isSenhaCorreta)
+                            {
+                                ModelState.AddModelError("", "A conta está bloqueada");
+                                break;
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Credenciais inválidas");
+                                break;
+                            }
+                        default:
+                            ModelState.AddModelError("", "Credenciais inválidas");
+                            break;
                     }
+                }
+                else
+                {
                     ModelState.AddModelError("", "Credenciais inválidas");
                     return View();
+
                 }
-                ModelState.AddModelError("", "Credenciais inválidas");
-                return View();
             }
             //Algo de errado aconteceu
             return View();

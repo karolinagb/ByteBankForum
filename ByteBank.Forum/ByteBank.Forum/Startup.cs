@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace ByteBank.Forum
 {
@@ -25,9 +26,13 @@ namespace ByteBank.Forum
         public void ConfigureServices(IServiceCollection services)
         {
             services
-               .AddIdentity<UsuarioAplicacao, IdentityRole>(
-                    option => option.SignIn.RequireConfirmedEmail = true
-                ) //Adiciona o sistema Identiy padr�o para os tipos de perfis especificados
+               .AddIdentity<UsuarioAplicacao, IdentityRole>(option =>
+               {
+                   option.SignIn.RequireConfirmedEmail = true;
+                   option.Lockout.AllowedForNewUsers = true;
+                   option.Lockout.MaxFailedAccessAttempts = 3;
+                   option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+               }) //Adiciona o sistema Identiy padr�o para os tipos de perfis especificados
                .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementa��o do EntityFramework que armazena as informa��es de identidade
                .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
 
