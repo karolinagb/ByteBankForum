@@ -105,6 +105,10 @@ namespace ByteBank.Forum.Controllers
                                 ModelState.AddModelError("", "Credenciais inválidas");
                                 break;
                             }
+
+                        case "NotAllowed":
+                            return View("~/Views/Conta/AguardandoConfirmacao.cshtml");
+
                         default:
                             ModelState.AddModelError("", "Credenciais inválidas");
                             break;
