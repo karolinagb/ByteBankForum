@@ -36,6 +36,14 @@ namespace ByteBank.Forum
                .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementa��o do EntityFramework que armazena as informa��es de identidade
                .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
 
+            //Adicionando o serviço de autenticação do google a aplicação
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection = Configuration.GetSection("AutenticacaoExterna:AutenticacaoGoogle");
+                options.ClientId = googleAuthNSection["Client_Id"];
+                options.ClientSecret = googleAuthNSection["Client_Secret"];
+            });
+
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ByteBankForumContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
