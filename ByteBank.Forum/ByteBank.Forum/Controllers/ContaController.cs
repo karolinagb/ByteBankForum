@@ -3,6 +3,7 @@ using ByteBank.Forum.Services;
 using ByteBank.Forum.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ByteBank.Forum.Controllers
@@ -49,7 +50,9 @@ namespace ByteBank.Forum.Controllers
                     //await _signInManager.SignInAsync(user, isPersistent: true);
                     //var _model = _mapper.Map<UsuarioAplicacao>(model);
 
-                    await EnviarEmailDeConfirmacao(user);
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    await EnviarEmail(user, token, "ConfirmacaoEmail", "Conta", "Link de Ativação");
 
                     //Formatar para que esse codigo venha correto e nao tenha nenhuma conversão de caracteres
                     //var encodedCode = HttpUtility.UrlEncode(code);
@@ -149,22 +152,88 @@ namespace ByteBank.Forum.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private async Task EnviarEmailDeConfirmacao(UsuarioAplicacao model)
+        public ActionResult EsqueciSenha()
         {
-            var code = await _userManager
-                  .GenerateEmailConfirmationTokenAsync(model);
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<ActionResult> EsqueciSenha(ContaEsqueciSenhaViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                //if (user == null)
+                //{
+                //    return View("~/Views/Conta/EmailAlteracaoSenhaEnviado.cshtml");
+                //}
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                //Gerar token de reset da senha
+                //Gerar a url para o usuario
+                //Enviar esse email
+                await EnviarEmail(user, token, "ConfirmacaoAlteracaoSenha", "Conta", "Alteração de Senha");
+
+                return View("~/Views/Conta/EmailAlteracaoSenhaEnviado.cshtml");
+            }
+
+            return View();
+        }
+
+        public ActionResult ConfirmacaoAlteracaoSenha(string userId, string token)
+        {
+            var model = new ContaConfirmacaoAlteracaoSenhaViewModel
+            {
+                UserId = userId,
+                Token = token
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ConfirmacaoAlteracaoSenha(ContaConfirmacaoAlteracaoSenhaViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //Verifica o token recebido
+
+                //Verifica o id do usuario
+
+                //Mudar a senha do usuário
+                var user = await _userManager.FindByIdAsync(model.UserId);
+
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NovaSenha);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                foreach(var e in ModelState.Values.SelectMany(e => e.Errors))
+                {
+                    ModelState.AddModelError("", e.ErrorMessage);
+                }
+                
+            }
+            return View();
+        }
+
+        private async Task EnviarEmail(UsuarioAplicacao model, string token, string action, string controlador, string assunto)
+        {
             var linkDeCallBack = Url.Action(
-                "ConfirmacaoEmail",
-                "Conta",
-                new { userId = model.Id, code = code },
+                action,
+                controlador,
+                new { userId = model.Id, token = token },
                 //Protocolo do link (http ou https) = Deve ser o mesmo da aplicação em si.
                 //Vai retornar o protocolo da aplicação
                 Request.Scheme
                 );
 
             await _emailService.EnviarEmail(new[] { model.Email },
-                    "Link de Ativação", linkDeCallBack);
+                    assunto, linkDeCallBack);
         }
     }
 }

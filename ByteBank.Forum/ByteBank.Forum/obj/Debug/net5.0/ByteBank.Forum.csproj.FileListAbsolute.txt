@@ -417,3 +417,6 @@ C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\FluentV
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\FluentValidation.DependencyInjectionExtensions.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Topico\Criar.cshtml.g.cs
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\Login.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\EsqueciSenha.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\ConfirmacaoAlteracaoSenha.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\EmailAlteracaoSenhaEnviado.cshtml.g.cs
