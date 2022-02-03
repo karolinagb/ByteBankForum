@@ -1,4 +1,6 @@
-﻿@model ByteBank.Forum.ViewModels.ContaRegistrarViewModel
+﻿@using Microsoft.AspNetCore.Authentication
+
+@model ByteBank.Forum.ViewModels.ContaRegistrarViewModel
 
 @{
     ViewData["Title"] = "Registrar";
@@ -20,7 +22,12 @@
 
     <div class="form-group">
         <div class="offset-2 col-md-10">
-            <input type="submit" value="Registrar" class="btn"/>
+            <input type="submit" value="Registrar" class="btn" />
         </div>
     </div>
+}
+
+@using (Html.BeginForm("RegistrarPorAutenticacaoExterna", "Conta"))
+{
+    <button type="submit" name="provider" class="btn"> Google </button>
 }

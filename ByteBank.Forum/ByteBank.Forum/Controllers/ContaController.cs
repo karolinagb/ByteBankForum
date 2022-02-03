@@ -71,6 +71,15 @@ namespace ByteBank.Forum.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult RegistrarPorAutenticacaoExterna(string provider)
+        {
+            var url = Url.Action("RegistrarPorAutenticacaoExternaCallback");
+            var result = _signInManager.ConfigureExternalAuthenticationProperties(provider, url);
+
+            return RedirectToAction("Login");
+        }
+
         public ActionResult Login()
         {
             return View();
