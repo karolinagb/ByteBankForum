@@ -16,6 +16,16 @@
     <h4>Complete o cadastro de sua conta!</h4>
     <br />
 
+    @if (TempData["InfoIsNull"] != null)
+    {
+        @Html.ValidationSummary(TempData["InfoIsNull"].ToString(), new { @class = "text-danger" })
+    }
+
+    @if (TempData["FalhaCriarUsuario"] != null)
+    {
+        @Html.ValidationSummary(TempData["FalhaCriarUsuario"].ToString(), new { @class = "text-danger" })
+    }
+
     //O primeiro parametro é a mensagem e o segundo é a classe do bootstrap
     @Html.ValidationSummary("", new { @class = "text-danger" })
 

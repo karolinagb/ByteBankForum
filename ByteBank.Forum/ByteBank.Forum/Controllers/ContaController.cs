@@ -96,8 +96,9 @@ namespace ByteBank.Forum.Controllers
 
             if (info == null)
             {
-                ViewBag.ErrorTitle = $"Falha ao fazer autenticação com {info.LoginProvider}";
-                ViewBag.ErrorMessage = "Entre em contato com o suporte sistemaidentityalura@gmail.com";
+                TempData["InfoIsNull"] = $"Falha ao fazer autenticação com {info.LoginProvider} \r\n" +
+                    $"Entre em contato com o suporte sistemaidentityalura@gmail.com";
+
                 return RedirectToAction(nameof(Registrar));
             }
 
@@ -109,7 +110,7 @@ namespace ByteBank.Forum.Controllers
 
                 if (userAssociado != null)
                 {
-                    await _signInManager.SignInAsync(usuarioExistente, isPersistent: false);
+                    await _signInManager.SignInAsync(usuarioExistente, isPersistent: true);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -125,9 +126,15 @@ namespace ByteBank.Forum.Controllers
                 if (resultAddLogin.Succeeded)
                 {
                     //Entro com o usuário do banco (agora associado ao usuario externo)
-                    await _signInManager.SignInAsync(usuarioExistente, isPersistent: false);
+                    await _signInManager.SignInAsync(usuarioExistente, isPersistent: true);
                     return RedirectToAction("Index", "Home");
                 }
+                foreach(var erro in resultAddLogin.Errors)
+                {
+                    ModelState.AddModelError("", $"{erro.Code} : {erro.Description}");
+                    return RedirectToAction(nameof(Registrar));
+                }
+                
             }
 
             //Obter informações do usuário de login do google assim
@@ -140,17 +147,19 @@ namespace ByteBank.Forum.Controllers
             }
 
             var result2 = await _userManager.CreateAsync(novoUsuario);
+
             if (result2.Succeeded)
             {
                 result2 = await _userManager.AddLoginAsync(novoUsuario, info);
                 if (result2.Succeeded)
                 {
+                    await _signInManager.SignInAsync(novoUsuario, isPersistent: true);
                     return RedirectToAction("Index", "Home");
                 }
             }
 
-            ViewBag.ErrorTitle = $"Falha ao fazer autenticação com {info.LoginProvider}";
-            ViewBag.ErrorMessage = "Entre em contato com o suporte sistemaidentityalura@gmail.com";
+            TempData["FalhaCriarUsuario"] = $"Falha ao fazer autenticação com {info.LoginProvider} \r\n" +
+                   $"Entre em contato com o suporte sistemaidentityalura@gmail.com";
 
             return View(nameof(Registrar));
         }
