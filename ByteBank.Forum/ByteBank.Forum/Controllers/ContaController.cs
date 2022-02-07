@@ -80,7 +80,6 @@ namespace ByteBank.Forum.Controllers
             var redirectUrl = Url.Action("RegistrarPorAutenticacaoExternaCallback", "Conta", new { returnUrl });
 
             var propriedades = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            propriedades.AllowRefresh = true;
 
             return Challenge(propriedades, provider);
         }
