@@ -49,7 +49,9 @@ namespace ByteBank.Forum
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             services.AddMvc().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
+
             services.AddScoped<EmailService>();
+
             services.AddControllersWithViews();
         }
 
@@ -79,6 +81,11 @@ namespace ByteBank.Forum
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "Admin",
+                    pattern: "{area:exists}/{controller=}/{id?}"
+                    );
             });
         }
     }
