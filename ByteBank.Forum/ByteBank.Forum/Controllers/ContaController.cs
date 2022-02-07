@@ -129,12 +129,12 @@ namespace ByteBank.Forum.Controllers
                     await _signInManager.SignInAsync(usuarioExistente, isPersistent: true);
                     return RedirectToAction("Index", "Home");
                 }
-                foreach(var erro in resultAddLogin.Errors)
+                foreach (var erro in resultAddLogin.Errors)
                 {
                     ModelState.AddModelError("", $"{erro.Code} : {erro.Description}");
                     return RedirectToAction(nameof(Registrar));
                 }
-                
+
             }
 
             //Obter informações do usuário de login do google assim
@@ -219,6 +219,41 @@ namespace ByteBank.Forum.Controllers
             }
             //Algo de errado aconteceu
             return View();
+        }
+
+        public ActionResult LoginPorAutenticacaoExterna(string provider)
+        {
+
+            var redirectUrl = Url.Action("LoginPorAutenticacaoExternaCallback", "Conta");
+
+            var propriedades = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+            return Challenge(propriedades, provider);
+        }
+
+        public async Task<ActionResult> LoginPorAutenticacaoExternaCallback()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            if (info == null)
+            {
+                TempData["InfoIsNull"] = $"Falha ao fazer autenticação com {info.LoginProvider} \r\n" +
+                    $"Entre em contato com o suporte sistemaidentityalura@gmail.com";
+
+                return RedirectToAction(nameof(Login));
+            }
+
+            var usuarioExistente = await _userManager.FindByEmailAsync(info.Principal.FindFirstValue(ClaimTypes.Email.ToLower()));
+
+            if (usuarioExistente != null)
+            {
+                await _signInManager.SignInAsync(usuarioExistente, isPersistent: true);
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["CredenciaisInvalidas"] = "Credenciais inválidas";
+
+            return RedirectToAction(nameof(Login));
         }
 
         public async Task<ActionResult> ConfirmacaoEmail(string userId, string code)
