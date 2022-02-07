@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Authentication
+﻿@using Microsoft.AspNetCore.Identity;
+
+@inject SignInManager<UsuarioAplicacao> SignInManager;
 
 @model ByteBank.Forum.ViewModels.ContaRegistrarViewModel
 
@@ -24,10 +26,19 @@
         <div class="offset-2 col-md-10">
             <input type="submit" value="Registrar" class="btn" />
         </div>
-    </div>
-}
 
-@using (Html.BeginForm("RegistrarPorAutenticacaoExterna", "Conta"))
-{
-    <button type="submit" name="provider" class="btn"> Google </button>
+        @{
+            var esquemaAutenticacao = await SignInManager.GetExternalAuthenticationSchemesAsync();
+
+            if (esquemaAutenticacao != null)
+            {
+                foreach (var provider in esquemaAutenticacao)
+                {
+                    <button asp-action="RegistrarPorAutenticacaoExterna" class="btn btn-success" type="submit" value="@provider.Name" name="provider">
+                        Entrar com @provider.Name
+                    </button>
+                }
+            }
+        }
+    </div>
 }

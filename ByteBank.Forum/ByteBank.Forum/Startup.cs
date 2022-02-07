@@ -40,6 +40,8 @@ namespace ByteBank.Forum
             services.AddAuthentication().AddGoogle(options =>
             {
                 IConfigurationSection googleAuthNSection = Configuration.GetSection("AutenticacaoExterna:AutenticacaoGoogle");
+                //options.Scope.Add("https://www.googleapis.com/auth/gmail.modify");
+               // options.Scope.Add("https://www.googleapis.com/auth/gmail.settings.basic");
                 options.ClientId = googleAuthNSection["Client_Id"];
                 options.ClientSecret = googleAuthNSection["Client_Secret"];
             });

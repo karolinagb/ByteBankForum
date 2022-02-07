@@ -1,9 +1,11 @@
 ﻿using ByteBank.Forum.Models;
 using ByteBank.Forum.Services;
 using ByteBank.Forum.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ByteBank.Forum.Controllers
@@ -72,12 +74,86 @@ namespace ByteBank.Forum.Controllers
         }
 
         [HttpPost]
-        public ActionResult RegistrarPorAutenticacaoExterna(string provider)
+        public ActionResult RegistrarPorAutenticacaoExterna(string provider, string returnUrl = null)
         {
-            var url = Url.Action("RegistrarPorAutenticacaoExternaCallback");
-            var result = _signInManager.ConfigureExternalAuthenticationProperties(provider, url);
 
-            return RedirectToAction("Login");
+            var redirectUrl = Url.Action("RegistrarPorAutenticacaoExternaCallback", "Conta", new { returnUrl });
+
+            var propriedades = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            propriedades.AllowRefresh = true;
+
+            return Challenge(propriedades, provider);
+        }
+
+        public async Task<ActionResult> RegistrarPorAutenticacaoExternaCallback(string returnUrl = null, string remoteError = null)
+        {
+            if (remoteError != null)
+            {
+                ModelState.AddModelError("", $"Erro do provedor externo: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            if (info == null)
+            {
+                ViewBag.ErrorTitle = $"Falha ao fazer autenticação com {info.LoginProvider}";
+                ViewBag.ErrorMessage = "Entre em contato com o suporte sistemaidentityalura@gmail.com";
+                return RedirectToAction(nameof(Registrar));
+            }
+
+            var usuarioExistente = await _userManager.FindByEmailAsync(info.Principal.FindFirstValue(ClaimTypes.Email.ToLower()));
+
+            if (usuarioExistente != null)
+            {
+                var userAssociado = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                if (userAssociado != null)
+                {
+                    await _signInManager.SignInAsync(usuarioExistente, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
+                }
+
+                //Associa a conta externa com a que está no banco
+                var resultAddLogin = await _userManager.AddLoginAsync(usuarioExistente, info);
+
+                //if (resultAddLogin.Errors.Any(e => e.Code == "LoginAlreadyAssociated"))
+                //{
+                //    await _signInManager.SignInAsync(usuarioExistente, isPersistent: false);
+                //    return RedirectToAction("Index", "Home");
+                //}
+
+                if (resultAddLogin.Succeeded)
+                {
+                    //Entro com o usuário do banco (agora associado ao usuario externo)
+                    await _signInManager.SignInAsync(usuarioExistente, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            //Obter informações do usuário de login do google assim
+            var novoUsuario = new UsuarioAplicacao();
+
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                novoUsuario.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                novoUsuario.UserName = info.Principal.FindFirstValue(ClaimTypes.Email);
+            }
+
+            var result2 = await _userManager.CreateAsync(novoUsuario);
+            if (result2.Succeeded)
+            {
+                result2 = await _userManager.AddLoginAsync(novoUsuario, info);
+                if (result2.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            ViewBag.ErrorTitle = $"Falha ao fazer autenticação com {info.LoginProvider}";
+            ViewBag.ErrorMessage = "Entre em contato com o suporte sistemaidentityalura@gmail.com";
+
+            return View(nameof(Registrar));
         }
 
         public ActionResult Login()
@@ -221,11 +297,11 @@ namespace ByteBank.Forum.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                foreach(var e in ModelState.Values.SelectMany(e => e.Errors))
+                foreach (var e in ModelState.Values.SelectMany(e => e.Errors))
                 {
                     ModelState.AddModelError("", e.ErrorMessage);
                 }
-                
+
             }
             return View();
         }
