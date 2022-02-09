@@ -1,0 +1,66 @@
+﻿@model ByteBank.Forum.ViewModels.EditarFuncoesViewModel
+
+@{ ViewBag.Title = "EditarFuncoes";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<h2>Funções do usuário @Html.DisplayFor(model => model.Usuario.NomeCompleto)</h2>
+<h5>@Html.DisplayFor(model => model.Usuario.UserName)</h5>
+<h5>@Html.DisplayFor(model => model.Usuario.Email)</h5>
+<hr />
+
+@using (Html.BeginForm("EditarFuncoes", "Usuario", FormMethod.Post))
+{
+@Html.HiddenFor(model => model.Usuario.Id)
+                <div class="form-horizontal">
+                    <h4>Selecione as funções </h4>
+                    <br />
+                    <hr />
+
+                    <table>
+                        <tr>
+                            <th>
+                                Selecionado
+                            </th>
+                            <th>
+                                Função
+                            </th>
+                        </tr>
+                        <tbody>
+
+                            @foreach (var userRole in Model.UserRoles)
+                            {
+
+                                @Html.HiddenFor(modelo => userRole.Id)
+                                @Html.HiddenFor(modelo => userRole.Nome)
+
+                                                    <tr>
+                                                        <td>
+                                                            @*@Html.EditorFor(modelo => userRole.IsSelecionado)*@
+                                                            <input asp-for="@userRole.IsSelecionado" class="form-check-input" />
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelo => userRole.Nome)
+                                                        </td>
+                                                    </tr>
+                             }
+                            
+
+                        </tbody>
+                    </table>
+
+                    <br />
+                    <hr />
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Salvar" class="btn btn-success" />
+                        </div>
+                    </div>
+                </div>}
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <a asp-action="Index" asp-controller="Usuario" class="btn btn-primary">Cancelar</a>
+    </div>
+</div>
+

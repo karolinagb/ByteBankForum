@@ -424,3 +424,5 @@ C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\appsett
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\appsettings-exemplo.json
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.Google.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Administracao\Index.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Usuario\Index.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Usuario\EditarFuncoes.cshtml.g.cs
