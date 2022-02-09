@@ -50,32 +50,37 @@ namespace ByteBank.Forum.Controllers
         [HttpPost]
         public async Task<ActionResult> EditarFuncoes(EditarFuncoesViewModel editarFuncoesViewModel)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    //Recuperar usuário pelo Id
-            //    var usuario = await _userManager.FindByIdAsync(user.Id);
+            if (ModelState.IsValid)
+            {
+                //Recuperar usuário pelo Id
+                var usuario = await _userManager.FindByIdAsync(editarFuncoesViewModel.Usuario.Id);
 
-            //    //Buscar todas as roles do banco
-            //    //Pegar só as roles que o usuario pertence senão na remoção vai dar erro
-            //    var userRoles = await _userManager.GetRolesAsync(usuario);
+                //Buscar todas as roles do banco
+                //Pegar só as roles que o usuario pertence senão na remoção vai dar erro
+                var userRoles = await _userManager.GetRolesAsync(usuario);
 
-            //    //Remover todas as roles que o usuário for associado (seriam as que estavam selecionada antes da edição)
-            //    var result = await _userManager.RemoveFromRolesAsync(usuario, userRoles);
+                //Remover todas as roles que o usuário for associado (seriam as que estavam selecionada antes da edição)
+                var result = await _userManager.RemoveFromRolesAsync(usuario, userRoles);
 
-            //    if (result.Succeeded)
-            //    {
-            //        var rolesSelecionadas = userRolesViewModels.Where(x => x.IsSelecionado == true).Select(x => x.Nome);
+                if (result.Succeeded)
+                {
+                    var rolesSelecionadas = editarFuncoesViewModel.UserRoles.Where(x => x.IsSelecionado == true).Select(x => x.Nome);
 
-            //        var resultAddRole = await _userManager.AddToRolesAsync(usuario, rolesSelecionadas);
+                    var resultAddRole = await _userManager.AddToRolesAsync(usuario, rolesSelecionadas);
 
-            //        if (resultAddRole.Succeeded)
-            //        {
-            //            RedirectToAction("Index");
-            //        }
-            //    }
-            //}
+                    if (resultAddRole.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
 
-            return View();
+                foreach(var erro in result.Errors)
+                {
+                    ModelState.AddModelError("", $"{erro.Code} : {erro.Description}");
+                }
+            }
+
+            return View(editarFuncoesViewModel);
         }
     }
 }
