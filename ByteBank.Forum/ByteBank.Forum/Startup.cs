@@ -33,8 +33,8 @@ namespace ByteBank.Forum
                    option.Lockout.MaxFailedAccessAttempts = 3;
                    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                }) //Adiciona o sistema Identiy padr�o para os tipos de perfis especificados
-               .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementa��o do EntityFramework que armazena as informa��es de identidade
-               .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
+              .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementa��o do EntityFramework que armazena as informa��es de identidade
+              .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
 
             //Adicionando o serviço de autenticação do google a aplicação
             services.AddAuthentication().AddGoogle(options =>
@@ -51,6 +51,7 @@ namespace ByteBank.Forum
             services.AddMvc().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddScoped<EmailService>();
+            services.AddTransient<UsuarioService>();
 
             services.AddControllersWithViews();
         }

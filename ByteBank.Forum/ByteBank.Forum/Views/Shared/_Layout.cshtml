@@ -26,6 +26,16 @@
                         </li>
                     </ul>
 
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Usuario" asp-action="Index">Gerenciar Funções do Usuário</a>
+                            </li>
+                        }
+
+                    </ul>
+
 
                     <ul class="navbar-nav flex-grow-4">
                         @if (User.Identity.IsAuthenticated)
@@ -35,7 +45,7 @@
 
                             }
                             <li><p class="navbar-text text-dark">Olá, @User.Identity.Name</p></li>
-                            <li><a  href="javascript:document.getElementById('formulario_logOff').submit()" class="nav-link text-dark">LogOff</a></li>
+                            <li><a href="javascript:document.getElementById('formulario_logOff').submit()" class="nav-link text-dark">LogOff</a></li>
                         }
                         else
                         {

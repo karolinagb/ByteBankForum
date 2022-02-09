@@ -456,3 +456,5 @@ $RECYCLE.BIN/
 # Ignorado arquivo appsettings.json original para substituir por um de exemplo
 
 appsettings.json
+
+*.dll
