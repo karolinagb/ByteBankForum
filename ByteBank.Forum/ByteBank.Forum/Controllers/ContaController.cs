@@ -57,7 +57,7 @@ namespace ByteBank.Forum.Controllers
                     await EnviarEmail(user, token, "ConfirmacaoEmail", "Conta", "Link de Ativação");
 
                     //Formatar para que esse codigo venha correto e nao tenha nenhuma conversão de caracteres
-                    //var encodedCode = HttpUtility.UrlEncode(code);
+                    //var encodedCode = HttpUtility.UrlEncode(token);
 
                     return View("~/Views/Conta/AguardandoConfirmacao.cshtml");
                 }
@@ -256,15 +256,16 @@ namespace ByteBank.Forum.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        public async Task<ActionResult> ConfirmacaoEmail(string userId, string code)
+        [HttpGet]
+        public async Task<ActionResult> ConfirmacaoEmail(string userId, string token)
         {
-            if (userId == null || code == null)
+            if (userId == null || token == null)
             {
                 return View("~/Views/Shared/Error.cshtml");
             }
             var user = await _userManager.FindByIdAsync(userId);
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
@@ -346,6 +347,28 @@ namespace ByteBank.Forum.Controllers
                 }
 
             }
+            return View();
+        }
+
+        public async Task<ActionResult> MinhaConta()
+        {
+            var model = new ContaMinhaContaViewModel();
+
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var usuario = await _userManager.FindByEmailAsync(email);
+
+            model.NomeCompleto = usuario.NomeCompleto;
+            model.NumeroCelular = usuario.PhoneNumber;
+            model.HabilitarAutenticacaoDoisFatores = usuario.TwoFactorEnabled;
+            model.NumeroCelularConfirmado = usuario.PhoneNumberConfirmed;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> MinhaConta(ContaMinhaContaViewModel model)
+        {
             return View();
         }
 

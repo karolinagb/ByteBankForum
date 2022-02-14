@@ -44,7 +44,11 @@
                             {
 
                             }
-                            <li><p class="navbar-text text-dark">Olá, @User.Identity.Name</p></li>
+                            <li>
+                                 <p class="navbar-text text-dark">Olá, @Html.ActionLink(@User.Identity.Name, 
+                                                                      "MinhaConta", "Conta")</p>
+
+                            </li>
                             <li><a href="javascript:document.getElementById('formulario_logOff').submit()" class="nav-link text-dark">LogOff</a></li>
                         }
                         else
