@@ -427,3 +427,9 @@ C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\V
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Usuario\Index.cshtml.g.cs
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Usuario\EditarFuncoes.cshtml.g.cs
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\MinhaConta.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Twilio.dll
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\VerificacaoCodigoCelular.cshtml.g.cs

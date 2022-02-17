@@ -1,12 +1,12 @@
 ﻿using ByteBank.Forum.Models;
 using ByteBank.Forum.Services;
 using ByteBank.Forum.ViewModels;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Twilio.TwiML.Messaging;
 
 namespace ByteBank.Forum.Controllers
 {
@@ -20,11 +20,14 @@ namespace ByteBank.Forum.Controllers
         //SignInManager cuida das operações de login, logout etc
         private readonly SignInManager<UsuarioAplicacao> _signInManager;
 
-        public ContaController(UserManager<UsuarioAplicacao> userManager, SignInManager<UsuarioAplicacao> signInManager, EmailService emailService)
+        private readonly SmsService _smsService;
+
+        public ContaController(UserManager<UsuarioAplicacao> userManager, EmailService emailService, SignInManager<UsuarioAplicacao> signInManager, SmsService smsService)
         {
             _userManager = userManager;
             _emailService = emailService;
             _signInManager = signInManager;
+            _smsService = smsService;
         }
 
         public ActionResult Registrar()
@@ -369,6 +372,61 @@ namespace ByteBank.Forum.Controllers
         [HttpPost]
         public async Task<ActionResult> MinhaConta(ContaMinhaContaViewModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                var usuario = await _userManager.FindByEmailAsync(email);
+
+                usuario.NomeCompleto = model.NomeCompleto;
+
+                if (usuario.PhoneNumber != model.NumeroCelular)
+                {
+                    usuario.PhoneNumberConfirmed = false;
+                }
+
+                usuario.PhoneNumber = model.NumeroCelular;
+
+                if (!usuario.PhoneNumberConfirmed)
+                {
+                    await EnviarSmsConfirmacaoAsync(usuario);
+                }
+
+                var result = await _userManager.UpdateAsync(usuario);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                foreach (var e in result.Errors)
+                {
+                    ModelState.AddModelError("", $"{e.Code} : { e.Description}");
+                }
+            }
+            return View();
+        }
+
+        public ActionResult VerificacaoCodigoCelular()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> VerificacaoCodigoCelular(string token)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var usuario = await _userManager.FindByEmailAsync(email);
+
+            var result = await _smsService.VerificarCodigo(token, usuario.PhoneNumber);
+
+            if (result.Valid == true)
+            {
+                usuario.PhoneNumberConfirmed = true;
+                await _userManager.UpdateAsync(usuario);
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -385,6 +443,16 @@ namespace ByteBank.Forum.Controllers
 
             await _emailService.EnviarEmail(new[] { model.Email },
                     assunto, linkDeCallBack);
+        }
+
+        private async Task EnviarSmsConfirmacaoAsync(UsuarioAplicacao usuario)
+        {
+            //Ele gera token de mudança de celular e não de confirmação
+            //var token = await _userManager.GenerateChangePhoneNumberTokenAsync(usuario, usuario.PhoneNumber);
+
+            Message message = new Message("Teste", usuario.PhoneNumber);
+
+            await _smsService.Enviar(message);
         }
     }
 }

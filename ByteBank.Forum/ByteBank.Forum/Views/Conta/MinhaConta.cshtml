@@ -17,19 +17,21 @@
     <br />
 
     if (Model.NumeroCelularConfirmado)
-    {
-
+    { 
         @Html.LabelFor(x => x.HabilitarAutenticacaoDoisFatores)
         <br />
         @Html.EditorFor(x => x.HabilitarAutenticacaoDoisFatores)
         <br />
+    
     }
     else
     {
+    }
         <p>
             * Informe e confirme seu número de celular para habilitar a autenticação com 2 fatores!
         </p>
-    }
+
+        @Html.ActionLink("Clique aqui para verificar o token recebido", "VerificacaoCodigoCelular")
 
     <input type="submit" value="Salvar" class="btn btn-default" />
 }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Twilio;
 
 namespace ByteBank.Forum
 {
@@ -51,7 +52,18 @@ namespace ByteBank.Forum
             services.AddMvc().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddScoped<EmailService>();
+            services.AddScoped<SmsService>();
             services.AddTransient<UsuarioService>();
+
+            var sidConta = Configuration.GetValue<string>("Twilio:SIDConta");
+            var tokenConta = Configuration.GetValue<string>("Twilio:TokenConta");
+            TwilioClient.Init(sidConta, tokenConta);
+
+            //Configurações para usar o twilio para envio de SMS
+            //O Twilio usa a instância singleton
+            //var sidConta = Configuration["Twilio: SIDConta"];
+            //var tokenConta = Configuration["Twilio:TokenConta"];
+            //TwilioClient.Init(sidConta, tokenConta);
 
             services.AddControllersWithViews();
         }
