@@ -22,7 +22,7 @@ namespace ByteBank.Forum.Services
         }
 
 
-        public async Task Enviar(Message mensagemSMS)
+        public async Task<VerificationResource> Enviar(Message mensagemSMS)
         {
 
             TwilioClient.Init(sidConta, tokenConta);
@@ -30,7 +30,7 @@ namespace ByteBank.Forum.Services
              CreateVerificationOptions createVerificationOptions = new CreateVerificationOptions(sidServico,
                 mensagemSMS.To, "sms");
 
-            var result = await VerificationResource.CreateAsync(createVerificationOptions);
+            return await VerificationResource.CreateAsync(createVerificationOptions);
         }
 
         public async Task<VerificationCheckResource> VerificarCodigo(string token, string to)

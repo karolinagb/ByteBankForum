@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Twilio.Rest.Verify.V2.Service;
 using Twilio.TwiML.Messaging;
 
 namespace ByteBank.Forum.Controllers
@@ -357,9 +358,7 @@ namespace ByteBank.Forum.Controllers
         {
             var model = new ContaMinhaContaViewModel();
 
-            var email = User.FindFirstValue(ClaimTypes.Email);
-
-            var usuario = await _userManager.FindByEmailAsync(email);
+            var usuario = await _userManager.GetUserAsync(User);
 
             model.NomeCompleto = usuario.NomeCompleto;
             model.NumeroCelular = usuario.PhoneNumber;
@@ -374,8 +373,7 @@ namespace ByteBank.Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var email = User.FindFirstValue(ClaimTypes.Email);
-                var usuario = await _userManager.FindByEmailAsync(email);
+                var usuario = await _userManager.GetUserAsync(User);
 
                 usuario.NomeCompleto = model.NomeCompleto;
 
@@ -386,22 +384,29 @@ namespace ByteBank.Forum.Controllers
 
                 usuario.PhoneNumber = model.NumeroCelular;
 
-                if (!usuario.PhoneNumberConfirmed)
+                var resultUpdateUser = await _userManager.UpdateAsync(usuario);
+
+                if (!resultUpdateUser.Succeeded)
                 {
-                    await EnviarSmsConfirmacaoAsync(usuario);
+                    foreach (var e in resultUpdateUser.Errors)
+                    {
+                        ModelState.AddModelError("", $"{e.Code} : { e.Description}");
+                        return View();
+                    }
                 }
 
-                var result = await _userManager.UpdateAsync(usuario);
+                var resultEnvioSms = !usuario.PhoneNumberConfirmed ?
+                    await EnviarSmsConfirmacaoAsync(usuario) : null;
 
-                if (result.Succeeded)
+                if (resultEnvioSms != null)
                 {
-                    return RedirectToAction("Index", "Home");
+                    if (resultEnvioSms.Status == "pending")
+                    {
+                        return RedirectToAction("VerificacaoCodigoCelular");
+                    }
                 }
 
-                foreach (var e in result.Errors)
-                {
-                    ModelState.AddModelError("", $"{e.Code} : { e.Description}");
-                }
+                ModelState.AddModelError("", "Ocorreu um erro ao enviar o código de verificação");
             }
             return View();
         }
@@ -414,18 +419,26 @@ namespace ByteBank.Forum.Controllers
         [HttpPost]
         public async Task<ActionResult> VerificacaoCodigoCelular(string token)
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
-
-            var usuario = await _userManager.FindByEmailAsync(email);
+            var usuario = await _userManager.GetUserAsync(User);
 
             var result = await _smsService.VerificarCodigo(token, usuario.PhoneNumber);
 
-            if (result.Valid == true)
+            if (result.Status == "approved")
             {
                 usuario.PhoneNumberConfirmed = true;
-                await _userManager.UpdateAsync(usuario);
-                return RedirectToAction("Index", "Home");
+                var resultUpdateUser = await _userManager.UpdateAsync(usuario);
+
+                if (resultUpdateUser.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Ocorreu um erro ao confirmar o código de verificação, tente novamente");
+                }
             }
+
+            ModelState.AddModelError("", $"Ocorreu um erro ao confirmar o código de verificação: {result.Status}");
 
             return View();
         }
@@ -445,14 +458,14 @@ namespace ByteBank.Forum.Controllers
                     assunto, linkDeCallBack);
         }
 
-        private async Task EnviarSmsConfirmacaoAsync(UsuarioAplicacao usuario)
+        private async Task<VerificationResource> EnviarSmsConfirmacaoAsync(UsuarioAplicacao usuario)
         {
             //Ele gera token de mudança de celular e não de confirmação
             //var token = await _userManager.GenerateChangePhoneNumberTokenAsync(usuario, usuario.PhoneNumber);
 
             Message message = new Message("Teste", usuario.PhoneNumber);
 
-            await _smsService.Enviar(message);
+            return await _smsService.Enviar(message);
         }
     }
 }
