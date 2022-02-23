@@ -1,17 +1,19 @@
 ﻿using ByteBank.Forum.Models;
 using ByteBank.Forum.Services;
 using ByteBank.Forum.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Twilio.Clients;
 using Twilio.Rest.Verify.V2.Service;
 using Twilio.TwiML.Messaging;
 
 namespace ByteBank.Forum.Controllers
 {
-
     public class ContaController : Controller
     {
         //UserManager é usado para manipulação do dado do usuário //Operações de criar usuario, deletar e etc
@@ -29,6 +31,7 @@ namespace ByteBank.Forum.Controllers
             _emailService = emailService;
             _signInManager = signInManager;
             _smsService = smsService;
+            _userManager.RegisterTokenProvider("sms", new PhoneNumberTokenProvider<UsuarioAplicacao> { });
         }
 
         public ActionResult Registrar()
@@ -176,53 +179,79 @@ namespace ByteBank.Forum.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(ContaLoginViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    var signInResult = await _signInManager.PasswordSignInAsync(
-                            user.UserName,
-                            model.Senha,
-                            isPersistent: model.ContinuarLogado, //Se o usuario deve continua logado ou não
-                            lockoutOnFailure: true);
-
-                    switch (signInResult.ToString())
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
                     {
-                        case "Succeeded":
-                            return RedirectToAction("Index", "Home");
+                        var signInResult = await _signInManager.PasswordSignInAsync(
+                                user.UserName,
+                                model.Senha,
+                                isPersistent: model.ContinuarLogado, //Se o usuario deve continua logado ou não
+                                lockoutOnFailure: true);
 
-                        case "Lockedout":
-                            var isSenhaCorreta = await _userManager.CheckPasswordAsync(user, model.Senha);
+                        switch (signInResult.ToString())
+                        {
+                            case "Succeeded":
+                                return RedirectToAction("Index", "Home");
 
-                            if (isSenhaCorreta)
-                            {
-                                ModelState.AddModelError("", "A conta está bloqueada");
-                                break;
-                            }
-                            else
-                            {
+                            case "Lockedout":
+                                var isSenhaCorreta = await _userManager.CheckPasswordAsync(user, model.Senha);
+
+                                if (isSenhaCorreta)
+                                {
+                                    ModelState.AddModelError("", "A conta está bloqueada");
+                                    break;
+                                }
+                                else
+                                {
+                                    ModelState.AddModelError("", "Credenciais inválidas");
+                                    break;
+                                }
+
+                            case "NotAllowed":
+                                return View("~/Views/Conta/AguardandoConfirmacao.cshtml");
+
+                            case "RequiresTwoFactor":
+
+                                var result = await EnviarSmsConfirmacaoAsync(user);
+
+                                if (result.Status == "pending")
+                                {
+                                    //ViewBag.IsPersistent = model.ContinuarLogado;
+                                    ContaVerificacaoDoisFatoresViewModel verificacaoDoisFatoresViewModel
+                                        = new ContaVerificacaoDoisFatoresViewModel();
+                                    verificacaoDoisFatoresViewModel.Id = user.Id;
+                                    return View("VerificacaoDoisFatores", verificacaoDoisFatoresViewModel);
+                                }
+
+                                ModelState.AddModelError("", "Ocorreu um erro no envio do token 2FA. \r\n" +
+                                       "Tente novamente");
+
+                                return View();
+
+                            default:
                                 ModelState.AddModelError("", "Credenciais inválidas");
                                 break;
-                            }
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Credenciais inválidas");
+                        return View();
 
-                        case "NotAllowed":
-                            return View("~/Views/Conta/AguardandoConfirmacao.cshtml");
-
-                        default:
-                            ModelState.AddModelError("", "Credenciais inválidas");
-                            break;
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Credenciais inválidas");
-                    return View();
-
-                }
+                //Algo de errado aconteceu
+                return View();
             }
-            //Algo de errado aconteceu
-            return View();
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View();
+            }
         }
 
         public ActionResult LoginPorAutenticacaoExterna(string provider)
@@ -384,30 +413,49 @@ namespace ByteBank.Forum.Controllers
 
                 usuario.PhoneNumber = model.NumeroCelular;
 
-                var resultUpdateUser = await _userManager.UpdateAsync(usuario);
-
-                if (!resultUpdateUser.Succeeded)
-                {
-                    foreach (var e in resultUpdateUser.Errors)
-                    {
-                        ModelState.AddModelError("", $"{e.Code} : { e.Description}");
-                        return View();
-                    }
-                }
 
                 var resultEnvioSms = !usuario.PhoneNumberConfirmed ?
                     await EnviarSmsConfirmacaoAsync(usuario) : null;
 
-                if (resultEnvioSms != null)
+                if (resultEnvioSms == null)
+                {
+                    usuario.TwoFactorEnabled = model.HabilitarAutenticacaoDoisFatores;
+                    var resultUpdateUser = await _userManager.UpdateAsync(usuario);
+
+                    if (!resultUpdateUser.Succeeded)
+                    {
+                        foreach (var e in resultUpdateUser.Errors)
+                        {
+                            ModelState.AddModelError("", $"{e.Code} : { e.Description}");
+                            return View();
+                        }
+                    }
+
+                    return RedirectToAction("MinhaConta");
+                }
+                else
                 {
                     if (resultEnvioSms.Status == "pending")
                     {
+                        var resultUpdateUser = await _userManager.UpdateAsync(usuario);
+
+                        if (!resultUpdateUser.Succeeded)
+                        {
+                            foreach (var e in resultUpdateUser.Errors)
+                            {
+                                ModelState.AddModelError("", $"{e.Code} : { e.Description}");
+                                return View();
+                            }
+                        }
+
                         return RedirectToAction("VerificacaoCodigoCelular");
                     }
                 }
-
-                ModelState.AddModelError("", "Ocorreu um erro ao enviar o código de verificação");
             }
+
+            ModelState.AddModelError("", "Ocorreu um erro ao enviar o código de verificação. \r\n" +
+                "Verifique o número de telefone e tente novamente.");
+
             return View();
         }
 
@@ -442,6 +490,57 @@ namespace ByteBank.Forum.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public async Task<ActionResult> VerificacaoDoisFatores(ContaVerificacaoDoisFatoresViewModel modelo)
+        {
+            try
+            {
+                var usuario = await _userManager.FindByIdAsync(modelo.Id);
+
+                var result = await _smsService.VerificarCodigo(modelo.Token, usuario.PhoneNumber);
+
+
+                if (result.Status == "approved")
+                {
+
+                    await _signInManager.SignInAsync(usuario, modelo.ContinuarLogado);
+
+                    //var resultSignIn = await _signInManager.TwoFactorSignInAsync("sms", modelo.Token,
+                    //    isPersistent: modelo.ContinuarLogado,
+                    //    rememberClient: modelo.LembrarDesteComputador);
+
+                    //if (resultSignIn.ToString() == "Success")
+                    //{
+                    //    return RedirectToAction("Index", "Home");
+                    //}
+
+                    //AuthenticationProperties authenticationProperties = new AuthenticationProperties()
+                    //{
+                    //     rememberClien
+                    //};
+
+                    foreach (var e in ModelState.Values.SelectMany(e => e.Errors))
+                    {
+                        ModelState.AddModelError("", e.ErrorMessage);
+                    }
+
+                    ModelState.AddModelError("", $"Ocorreu um erro ao fazer Login");
+                }
+
+                ModelState.AddModelError("", $"Ocorreu um erro ao confirmar o código 2FA para Login.\r\n" +
+                    $"Tente Logar novamente");
+
+                return View("Login");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View();
+            }
+        }
+
+
 
         private async Task EnviarEmail(UsuarioAplicacao model, string token, string action, string controlador, string assunto)
         {

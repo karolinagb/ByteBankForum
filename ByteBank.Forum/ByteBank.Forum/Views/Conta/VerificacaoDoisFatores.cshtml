@@ -1,0 +1,18 @@
+﻿@model ByteBank.Forum.ViewModels.ContaVerificacaoDoisFatoresViewModel
+
+<h2>Verificar token 2FA</h2>
+
+@using (Html.BeginForm("VerificacaoDoisFatores", "Conta"))
+{
+    @*@Html.HiddenFor(x => x.Id);
+    @Html.Hidden("continuarLogado", (bool)@ViewBag.IsPersistent)
+
+    <label>Digite o token 2FA</label>
+    <input type="text" name="token" />*@
+
+    @Html.ValidationSummary()
+
+    @Html.EditorForModel()
+
+    <input asp-action="VerificacaoDoisFatores" formmethod="post" type="submit" value="Enviar" />
+}

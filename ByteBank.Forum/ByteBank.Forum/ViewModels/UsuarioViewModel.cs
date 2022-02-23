@@ -1,10 +1,12 @@
 ﻿using ByteBank.Forum.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
 namespace ByteBank.Forum.ViewModels
 {
     public class UsuarioViewModel
     {
+        [HiddenInput(DisplayValue = true)]
         public string Id { get; set; }
         public string NomeCompleto { get; set; }
         public string Email { get; set; }

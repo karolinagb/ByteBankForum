@@ -32,7 +32,7 @@ namespace ByteBank.Forum
                    option.SignIn.RequireConfirmedEmail = true;
                    option.Lockout.AllowedForNewUsers = true;
                    option.Lockout.MaxFailedAccessAttempts = 3;
-                   option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                   option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(0);
                }) //Adiciona o sistema Identiy padr�o para os tipos de perfis especificados
               .AddEntityFrameworkStores<ByteBankForumContext>() //Adiciona uma implementa��o do EntityFramework que armazena as informa��es de identidade
               .AddDefaultTokenProviders(); //Inclui os tokens para troca de senha e envio de e-mail
