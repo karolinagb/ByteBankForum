@@ -506,6 +506,8 @@ namespace ByteBank.Forum.Controllers
 
                     await _signInManager.SignInAsync(usuario, modelo.ContinuarLogado);
 
+                    RedirectToAction("Index", "Home");
+
                     //var resultSignIn = await _signInManager.TwoFactorSignInAsync("sms", modelo.Token,
                     //    isPersistent: modelo.ContinuarLogado,
                     //    rememberClient: modelo.LembrarDesteComputador);
@@ -520,12 +522,12 @@ namespace ByteBank.Forum.Controllers
                     //     rememberClien
                     //};
 
-                    foreach (var e in ModelState.Values.SelectMany(e => e.Errors))
-                    {
-                        ModelState.AddModelError("", e.ErrorMessage);
-                    }
+                    //foreach (var e in ModelState.Values.SelectMany(e => e.Errors))
+                    //{
+                    //    ModelState.AddModelError("", e.ErrorMessage);
+                    //}
 
-                    ModelState.AddModelError("", $"Ocorreu um erro ao fazer Login");
+                    //ModelState.AddModelError("", $"Ocorreu um erro ao fazer Login");
                 }
 
                 ModelState.AddModelError("", $"Ocorreu um erro ao confirmar o código 2FA para Login.\r\n" +
