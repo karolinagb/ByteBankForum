@@ -503,10 +503,13 @@ namespace ByteBank.Forum.Controllers
 
                 if (result.Status == "approved")
                 {
-
+                    if (modelo.LembrarDesteComputador)
+                    {
+                        await _signInManager.RememberTwoFactorClientAsync(usuario);
+                    }
                     await _signInManager.SignInAsync(usuario, modelo.ContinuarLogado);
 
-                    RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
 
                     //var resultSignIn = await _signInManager.TwoFactorSignInAsync("sms", modelo.Token,
                     //    isPersistent: modelo.ContinuarLogado,
@@ -563,6 +566,8 @@ namespace ByteBank.Forum.Controllers
         {
             //Ele gera token de mudança de celular e não de confirmação
             //var token = await _userManager.GenerateChangePhoneNumberTokenAsync(usuario, usuario.PhoneNumber);
+
+            //var resultado = await _userManager.GenerateTwoFactorTokenAsync("SMS");
 
             Message message = new Message("Teste", usuario.PhoneNumber);
 
