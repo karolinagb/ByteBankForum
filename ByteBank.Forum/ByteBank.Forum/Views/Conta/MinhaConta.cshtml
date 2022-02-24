@@ -1,6 +1,22 @@
 ﻿@model ByteBank.Forum.ViewModels.ContaMinhaContaViewModel
 
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<UsuarioAplicacao> SignInManager
+@inject UserManager<UsuarioAplicacao> UserManager
+
+@{ 
+    var usuario = await UserManager.GetUserAsync(Context.User);
+}
+
+
 <h2>Minha Conta</h2>
+
+@using (Html.BeginForm("EsquecerNavegador", "Conta", FormMethod.Post,
+    new { id = "formulario_esquecer_navegador" }))
+{
+
+}
 
 @using (Html.BeginForm())
 {
@@ -22,6 +38,13 @@
         <br />
         @Html.EditorFor(x => x.HabilitarAutenticacaoDoisFatores)
         <br />
+
+        @if (await SignInManager.IsTwoFactorClientRememberedAsync(usuario))
+        {
+            <a href="javascript:document.getElementById('formulario_esquecer_navegador').submit()">
+                Esquecer este navegador
+            </a>
+        }
 
     }
     else

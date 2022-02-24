@@ -545,7 +545,12 @@ namespace ByteBank.Forum.Controllers
             }
         }
 
-
+        [HttpPost]
+        public ActionResult EsquecerNavegador()
+        {
+            _signInManager.ForgetTwoFactorClientAsync();
+            return RedirectToAction("MinhaConta");
+        }
 
         private async Task EnviarEmail(UsuarioAplicacao model, string token, string action, string controlador, string assunto)
         {
@@ -567,7 +572,7 @@ namespace ByteBank.Forum.Controllers
             //Ele gera token de mudança de celular e não de confirmação
             //var token = await _userManager.GenerateChangePhoneNumberTokenAsync(usuario, usuario.PhoneNumber);
 
-            //var resultado = await _userManager.GenerateTwoFactorTokenAsync("SMS");
+            //var resultado = await _userManager.GenerateTwoFactorTokenAsync(usuario);
 
             Message message = new Message("Teste", usuario.PhoneNumber);
 
