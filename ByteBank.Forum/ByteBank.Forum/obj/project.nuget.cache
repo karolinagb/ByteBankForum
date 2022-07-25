@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ZoE7UP4VkIKS+SIDxyKMhvgk+qeT4reJYhKC/HKWH5WV5mSREgHRiEJPy/s9lp08TOZKxEqEQF9McwQriqnEfg==",
+  "dgSpecHash": "yfnMKlcgJVGgjZOscfgHD0DoZ+N7ZDsTCyDUzkDlbKXlP1ghAYmC9XZMZWf7u344MDxVwdLK9dweImxrEdq0nw==",
   "success": true,
   "projectFilePath": "C:\\projetos\\ByteBankForum\\ByteBank.Forum\\ByteBank.Forum\\ByteBank.Forum.csproj",
   "expectedPackageFiles": [
@@ -147,7 +147,8 @@
     "C:\\Users\\Karol\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Users\\Karol\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512",
-    "C:\\Users\\Karol\\.nuget\\packages\\twilio\\5.71.0\\twilio.5.71.0.nupkg.sha512"
+    "C:\\Users\\Karol\\.nuget\\packages\\twilio\\5.71.0\\twilio.5.71.0.nupkg.sha512",
+    "C:\\Users\\Karol\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.16\\microsoft.netcore.app.host.win-x64.5.0.16.nupkg.sha512"
   ],
   "logs": []
 }

@@ -5,7 +5,7 @@
 @inject SignInManager<UsuarioAplicacao> SignInManager
 @inject UserManager<UsuarioAplicacao> UserManager
 
-@{ 
+@{
     var usuario = await UserManager.GetUserAsync(Context.User);
 }
 
@@ -13,7 +13,13 @@
 <h2>Minha Conta</h2>
 
 @using (Html.BeginForm("EsquecerNavegador", "Conta", FormMethod.Post,
-    new { id = "formulario_esquecer_navegador" }))
+  new { id = "formulario_esquecer_navegador" }))
+{
+
+}
+
+@using (Html.BeginForm("DeslogarTodosOsLocais", "Conta", FormMethod.Post,
+  new { id = "formulario_deslogar_locais" }))
 {
 
 }
@@ -55,6 +61,14 @@
 
         @Html.ActionLink("Clique aqui para verificar o token recebido", "VerificacaoCodigoCelular")
     }
+
+    <br />
+
+    <a href="javascript:document.getElementById('formulario_deslogar_locais').submit()">
+        Deslogar de todos os locais
+    </a>
+
+    <br />
 
     <input type="submit" value="Salvar" class="btn btn-default" />
 }

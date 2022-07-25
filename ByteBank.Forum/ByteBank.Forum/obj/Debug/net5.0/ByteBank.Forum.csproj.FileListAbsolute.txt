@@ -5,7 +5,6 @@ C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\ByteBan
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\ByteBank.Forum.runtimeconfig.json
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\ByteBank.Forum.runtimeconfig.dev.json
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\ByteBank.Forum.dll
-C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\ref\ByteBank.Forum.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\ByteBank.Forum.pdb
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\refs\Microsoft.AspNetCore.Antiforgery.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\refs\Microsoft.AspNetCore.Authentication.Abstractions.dll
@@ -434,3 +433,4 @@ C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\System.
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\bin\Debug\net5.0\Twilio.dll
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\VerificacaoCodigoCelular.cshtml.g.cs
 C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\Razor\Views\Conta\VerificacaoDoisFatores.cshtml.g.cs
+C:\projetos\ByteBankForum\ByteBank.Forum\ByteBank.Forum\obj\Debug\net5.0\refint\ByteBank.Forum.dll

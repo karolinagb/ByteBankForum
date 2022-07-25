@@ -1,14 +1,13 @@
 ﻿using ByteBank.Forum.Models;
 using ByteBank.Forum.Services;
 using ByteBank.Forum.ViewModels;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Twilio.Clients;
 using Twilio.Rest.Verify.V2.Service;
 using Twilio.TwiML.Messaging;
 
@@ -389,6 +388,11 @@ namespace ByteBank.Forum.Controllers
 
             var usuario = await _userManager.GetUserAsync(User);
 
+            if(usuario == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             model.NomeCompleto = usuario.NomeCompleto;
             model.NumeroCelular = usuario.PhoneNumber;
             model.HabilitarAutenticacaoDoisFatores = usuario.TwoFactorEnabled;
@@ -550,6 +554,29 @@ namespace ByteBank.Forum.Controllers
         {
             _signInManager.ForgetTwoFactorClientAsync();
             return RedirectToAction("MinhaConta");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeslogarTodosOsLocais()
+        {
+            var usuario = await _userManager.GetUserAsync(User);
+
+            var result = await _userManager.UpdateSecurityStampAsync(usuario);
+
+            if (result.Succeeded)
+            {
+                CookieAuthenticationOptions cookieAuthenticationOptions = new CookieAuthenticationOptions();
+                cookieAuthenticationOptions.ExpireTimeSpan = TimeSpan.FromSeconds(0);
+
+                //securityStampValidatorOptions = new SecurityStampValidatorOptions();
+
+                //securityStampValidatorOptions.ValidationInterval = TimeSpan.FromSeconds(0);
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError("", "Algum erro ocorreu ao deslogar de todas os locais. Tente novamente.");
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task EnviarEmail(UsuarioAplicacao model, string token, string action, string controlador, string assunto)
